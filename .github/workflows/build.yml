@@ -30,20 +30,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # Builds the optimized Release APK (uses proguard rules from app/proguard-rules.pro)
-      - name: Build Release APK
-        run: ./gradlew assembleRelease
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
       - name: Rename APK
         run: |
-          # Find the release APK (matches signed or unsigned depending on your gradle config)
-          APK_FILE=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
-          
-          # Fallback to debug if release fails/isn't found
-          if [ -z "$APK_FILE" ]; then
-            echo "Release APK not found. Checking for debug APK..."
-            APK_FILE=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
-          fi
+          # Look for the debug APK instead
+          APK_FILE=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
           
           echo "Found APK: $APK_FILE"
           mv "$APK_FILE" SimpleKeyboard.apk
