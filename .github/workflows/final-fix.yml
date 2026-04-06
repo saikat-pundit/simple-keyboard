@@ -1,0 +1,74 @@
+name: Final Fix and Cleanup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Clean XML Logic
+        run: |
+          echo "Fixing logic errors in remaining XML files..."
+          
+          # Fix key_comma.xml: Remove references to dvorak/email/url modes to keep it simple
+          # This replaces the whole switch with a simple default English comma key
+          cat <<EOF > app/src/main/res/xml/key_comma.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+              <Key latin:keySpec="!text/keyspec_comma" latin:keyLabelFlags="hasPopupHint" latin:keyStyle="settingsMoreKeysStyle" />
+          </merge>
+          EOF
+
+          # Fix key_period.xml: Remove dvorak and bengali cases
+          cat <<EOF > app/src/main/res/xml/key_period.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+              <Key latin:keySpec="!text/keyspec_period" latin:keyHintLabel="!text/keyhintlabel_period" latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint" latin:moreKeys="!text/morekeys_period" latin:backgroundType="functional" />
+          </merge>
+          EOF
+
+          # Fix sw600dp (Tablet) versions as well
+          cp app/src/main/res/xml/key_comma.xml app/src/main/res/xml-sw600dp/key_comma.xml
+          cp app/src/main/res/xml/key_period.xml app/src/main/res/xml-sw600dp/key_period.xml
+
+      - name: Strip All Remaining Comments and Space
+        run: |
+          # Remove ALL XML comments (including the /**** headers)
+          find app/src/main/res/ -type f -name "*.xml" -exec perl -0777 -pi -e 's///g' {} +
+          
+          # Remove ALL Java comments
+          find app/src/main/java/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?\*\///g' {} +
+          find app/src/main/java/ -type f -name "*.java" -exec sed -i 's|(?<!:)\/\/.*||g' {} +
+          
+          # Delete empty lines and lead/trail spaces to shrink file size
+          find app/src/main/ -type f \( -name "*.java" -o -name "*.xml" \) -exec sed -i '/^[[:space:]]*$/d' {} +
+          find app/src/main/ -type f \( -name "*.java" -o -name "*.xml" \) -exec sed -i 's/[[:space:]]*$//' {} +
+          
+          # Fix: Ensure <?xml?> is on the first line alone
+          find app/src/main/res/ -type f -name "*.xml" -exec sed -i '1s/<?xml version="1.0" encoding="utf-8"?>/<?xml version="1.0" encoding="utf-8"?>\n/' {} +
+
+      - name: Final File Deletion (The Stragglers)
+        run: |
+          # Delete any leftover non-English rows we missed
+          find app/src/main/res/xml*/ -type f -name "rows_*.xml" ! -name "rows_qwerty.xml" ! -name "rows_symbols*.xml" ! -name "rows_number*.xml" ! -name "rows_phone*.xml" ! -name "rows_abc.xml" -delete
+          find app/src/main/res/xml*/ -type f -name "rowkeys_*.xml" ! -name "rowkeys_qwerty*.xml" ! -name "rowkeys_symbols*.xml" ! -name "rowkeys_abc*.xml" -delete
+          find app/src/main/res/xml*/ -type f -name "kbd_*.xml" ! -name "kbd_qwerty.xml" ! -name "kbd_symbols*.xml" ! -name "kbd_number.xml" ! -name "kbd_phone*.xml" ! -name "kbd_abc.xml" ! -name "kbd_more_keys_keyboard_template.xml" -delete
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff-index --quiet HEAD --; then
+            echo "No changes needed."
+          else
+            git commit -m "fix: logic cleanup, reference repair, and comment stripping"
+            git push
+          fi
