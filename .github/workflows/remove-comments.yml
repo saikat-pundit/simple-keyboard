@@ -1,4 +1,4 @@
-name: Strip All Comments and Headers
+name: Ultimate Strip All Comments
 
 on:
   workflow_dispatch:
@@ -15,21 +15,27 @@ jobs:
 
       - name: Strip All XML Comments
         run: |
-          echo "Removing all comments from XML files..."
-          # This removes everything between including the tags themselves
+          echo "Removing all XML comments including inline headers..."
+          # 1. Specifically target comments that appear immediately after the XML declaration
+          find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/(<\?xml.*?\?>)\s*/$1/g' {} +
+          
+          # 2. Remove any other remaining XML comments
           find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/\n*//g' {} +
+          
+          # 3. Clean up leading/trailing whitespace
+          find app/src/main/ -type f -name "*.xml" -exec sed -i 's/^[[:space:]]*//; s/[[:space:]]*$//' {} +
 
       - name: Strip All Java Comments
         run: |
-          echo "Removing all comments from Java files..."
-          # 1. Remove multi-line comments (/* ... */) and Javadoc (/** ... */)
+          echo "Removing all Java comments (/* */, /** */, //)..."
+          # 1. Remove multi-line and Javadoc comments
           find app/src/main/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?\*\/\n*//g' {} +
           
-          # 2. Remove single-line comments (// ...) 
-          # We use a regex that avoids matching // inside strings (http://)
-          find app/src/main/ -type f -name "*.java" -exec sed -i 's|\/\/.*||g' {} +
+          # 2. Remove single-line comments but protect URL strings (http://)
+          # This regex matches // only if not preceded by a colon
+          find app/src/main/ -type f -name "*.java" -exec sed -i 's|(?<!:)\/\/.*||g' {} +
           
-          # 3. Remove resulting empty lines to keep the file compact
+          # 3. Final cleanup: Remove all empty lines to collapse the code
           find app/src/main/ -type f -name "*.java" -exec sed -i '/^[[:space:]]*$/d' {} +
 
       - name: Commit and Push Changes
@@ -42,7 +48,7 @@ jobs:
           if git diff-index --quiet HEAD --; then
             echo "No comments found to delete."
           else
-            git commit -m "chore: complete strip of all comments and documentation"
+            git commit -m "chore: final aggressive strip of all comments and headers"
             git push
-            echo "Project is now comment-free."
+            echo "All comments successfully removed."
           fi
