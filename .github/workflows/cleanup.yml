@@ -1,0 +1,60 @@
+name: Remove Non-English Languages
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: write # Allows the bot to commit and push code
+
+jobs:
+  cleanup-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Delete Language and Layout Files
+        run: |
+          echo "Deleting translated string folders..."
+          cd app/src/main/res/
+          rm -rf values-af values-am values-ar values-az-rAZ values-b+sr+Latn values-be-rBY values-bg values-bn-rBD values-bs-rBA values-ca values-cs values-da values-de values-el values-es values-es-rUS values-et-rEE values-eu-rES values-fa values-fi values-fr values-fr-rCA values-gl-rES values-gu-rIN values-hi values-hr values-hu values-hy-rAM values-in values-is-rIS values-it values-iw values-ja values-ka-rGE values-kk-rKZ values-km-rKH values-kn-rIN values-ko values-ky-rKG values-lo-rLA values-lt values-lv values-mk-rMK values-ml-rIN values-mn-rMN values-mr-rIN values-ms-rMY values-my-rMM values-nb values-ne-rNP values-nl values-pa-rIN values-pl values-pt values-ro values-ru values-si-rLK values-sk values-sl values-sq-rAL values-sr values-sv values-sw values-ta-rIN values-te-rIN values-th values-tl values-tr values-uk values-ur-rPK values-uz-rUZ values-vi values-zh-rCN values-zh-rHK values-zh-rTW values-zu
+          cd ../../../../
+
+          echo "Deleting non-English XML layouts..."
+          cd app/src/main/res/xml/
+          find . -type f -name "keyboard_layout_set_*.xml" ! -name "*qwerty*" ! -name "*abc*" -delete
+          find . -type f -name "kbd_*.xml" ! -name "*qwerty*" ! -name "*symbols*" ! -name "*number*" ! -name "*phone*" ! -name "*abc*" ! -name "*more_keys*" ! -name "*pcqwerty*" -delete
+          rm -f kdb_ergol.xml
+          find . -type f -name "row_*.xml" ! -name "*qwerty*" ! -name "*symbols*" -delete
+          find . -type f -name "rows_*.xml" ! -name "*qwerty*" ! -name "*symbols*" ! -name "*number*" ! -name "*phone*" ! -name "*abc*" ! -name "*pcqwerty*" -delete
+          find . -type f -name "rowkeys_*.xml" ! -name "*qwerty*" ! -name "*symbols*" ! -name "*abc*" -delete
+          rm -f key_armenian*.xml key_thai*.xml keystyle_devanagari*.xml keys_arabic*.xml keys_farsi*.xml
+          cd ../../../../
+
+          echo "Deleting non-English tablet layouts..."
+          if [ -d "app/src/main/res/xml-sw600dp/" ]; then
+            cd app/src/main/res/xml-sw600dp/
+            find . -type f -name "keyboard_layout_set_*.xml" ! -name "*qwerty*" ! -name "*abc*" -delete
+            find . -type f -name "row_*.xml" ! -name "*qwerty*" ! -name "*symbols*" -delete
+            find . -type f -name "rows_*.xml" ! -name "*qwerty*" ! -name "*symbols*" ! -name "*number*" ! -name "*phone*" ! -name "*abc*" ! -name "*pcqwerty*" -delete
+            find . -type f -name "rowkeys_*.xml" ! -name "*qwerty*" ! -name "*symbols*" ! -name "*abc*" -delete
+            rm -f keys_arabic*.xml keys_farsi*.xml
+            cd ../../../../
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Stage all deleted files
+          git add -u
+          
+          # Check if there are actually files to commit to avoid workflow failure
+          if git diff-index --quiet HEAD --; then
+            echo "No files needed to be deleted. Repository is already clean."
+          else
+            git commit -m "chore: remove multi-language support (keep English only)"
+            git push
+            echo "Successfully deleted language files and pushed to repository."
+          fi
