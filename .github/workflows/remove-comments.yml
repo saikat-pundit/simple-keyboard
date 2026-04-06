@@ -1,10 +1,10 @@
-name: Ultimate Strip All Comments
+name: Final Aggressive Comment Strip
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows you to manually trigger this from the Actions tab
 
 permissions:
-  contents: write
+  contents: write # Required to allow the bot to push the cleaned code back to your repo
 
 jobs:
   remove-comments:
@@ -13,42 +13,40 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Strip All XML Comments
+      - name: Strip Every Single Comment
         run: |
-          echo "Removing all XML comments including inline headers..."
-          # 1. Specifically target comments that appear immediately after the XML declaration
-          find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/(<\?xml.*?\?>)\s*/$1/g' {} +
+          echo "Processing XML files..."
+          # 1. Use Perl Slurp mode to find and remove ALL XML comments # This handles multi-line blocks and those stuck to the <?xml?> header
+          find app/src/main/res/ -type f -name "*.xml" -exec perl -0777 -pi -e 's///g' {} +
           
-          # 2. Remove any other remaining XML comments
-          find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/\n*//g' {} +
-          
-          # 3. Clean up leading/trailing whitespace
-          find app/src/main/ -type f -name "*.xml" -exec sed -i 's/^[[:space:]]*//; s/[[:space:]]*$//' {} +
+          # 2. Ensure the XML declaration stays at the very top of the file
+          find app/src/main/res/ -type f -name "*.xml" -exec sed -i '1s/^\s*//' {} +
 
-      - name: Strip All Java Comments
-        run: |
-          echo "Removing all Java comments (/* */, /** */, //)..."
-          # 1. Remove multi-line and Javadoc comments
-          find app/src/main/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?\*\/\n*//g' {} +
+          echo "Processing Java files..."
+          # 3. Remove all Java multi-line and Javadoc comments (/* ... */ and /** ... */)
+          find app/src/main/java/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?\*\///g' {} +
           
-          # 2. Remove single-line comments but protect URL strings (http://)
-          # This regex matches // only if not preceded by a colon
-          find app/src/main/ -type f -name "*.java" -exec sed -i 's|(?<!:)\/\/.*||g' {} +
-          
-          # 3. Final cleanup: Remove all empty lines to collapse the code
-          find app/src/main/ -type f -name "*.java" -exec sed -i '/^[[:space:]]*$/d' {} +
+          # 4. Remove all single-line comments (//)
+          # We use a regex that avoids accidentally breaking web URLs (https://)
+          find app/src/main/java/ -type f -name "*.java" -exec sed -i 's|(?<!:)\/\/.*||g' {} +
+
+          echo "Collapsing empty space and vacuuming files..."
+          # 5. Remove all resulting empty lines and trailing spaces to make the code tight
+          find app/src/main/ -type f \( -name "*.java" -o -name "*.xml" \) -exec sed -i '/^[[:space:]]*$/d' {} +
+          find app/src/main/ -type f \( -name "*.java" -o -name "*.xml" \) -exec sed -i 's/[[:space:]]*$//' {} +
 
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
+          # Stage the changes
           git add -u
           
           if git diff-index --quiet HEAD --; then
-            echo "No comments found to delete."
+            echo "No comments were found to delete. Repository is already clean."
           else
-            git commit -m "chore: final aggressive strip of all comments and headers"
+            git commit -m "chore: aggressive strip of all comments, license headers, and internal notes"
             git push
-            echo "All comments successfully removed."
+            echo "Success! All files have been stripped to pure code."
           fi
