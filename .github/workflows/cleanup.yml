@@ -41,26 +41,18 @@ jobs:
             rm -f keys_arabic*.xml keys_farsi*.xml
             cd ../../../../
           fi
-      - name: Delete Surviving Row Files
+
+      - name: Fix Broken XML References
         run: |
           echo "Cleaning up leftover rows..."
+          find app/src/main/res/ -type f -name "rows_*.xml" ! -name "rows_qwerty.xml" ! -name "rows_symbols*.xml" ! -name "rows_number*.xml" ! -name "rows_phone*.xml" ! -name "rows_abc.xml" -delete
           
-          # This command strictly deletes any 'rows_' file that isn't English, Numbers, or Symbols
-          find app/src/main/res/ -type f -name "rows_*.xml" ! -name "rows_qwerty.xml" ! -name "rows_symbols*.xml" ! -name "rows_number*.xml" ! -name "rows_phone*.xml" ! -name "rows_abc.xml" ! -name "rows_pcqwerty.xml" -delete
-          
-          # Delete the stubborn Armenian keyboard file
+          echo "Deleting leftover fragments causing build crashes (Ergol, Dvorak, PCQwerty, Armenian)..."
           find app/src/main/res/ -type f -name "*armenian*.xml" -delete
-          
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -u
-          
-          if git diff-index --quiet HEAD --; then
-            echo "Repository is fully clean."
-          else
-            git commit -m "chore: final cleanup of non-English rows"
-            git push
-          fi
+          find app/src/main/res/ -type f -name "*ergol*.xml" -delete
+          find app/src/main/res/ -type f -name "*dvorak*.xml" -delete
+          find app/src/main/res/ -type f -name "*pcqwerty*.xml" -delete
+
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
@@ -69,11 +61,10 @@ jobs:
           # Stage all deleted files
           git add -u
           
-          # Check if there are actually files to commit to avoid workflow failure
           if git diff-index --quiet HEAD --; then
             echo "No files needed to be deleted. Repository is already clean."
           else
-            git commit -m "chore: remove multi-language support (keep English only)"
+            git commit -m "fix: remove broken layout references and finalize cleanup"
             git push
-            echo "Successfully deleted language files and pushed to repository."
+            echo "Successfully deleted broken files and pushed to repository."
           fi
