@@ -1,0 +1,60 @@
+name: Android CI/CD Release
+
+on:
+  workflow_dispatch: # Manual trigger from the Actions tab
+  # Optional: Uncomment the lines below to auto-build when you push a new version tag (e.g., v6.3)
+  # push:
+  #   tags:
+  #     - 'v*'
+
+# Grant the workflow permission to create/update releases
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # IMPORTANT: Updated to JDK 17. 
+      # compileSdk 36 requires newer Gradle and AGP versions which no longer support Java 8.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Builds the optimized Release APK (uses proguard rules from app/proguard-rules.pro)
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+
+      - name: Rename APK
+        run: |
+          # Find the release APK (matches signed or unsigned depending on your gradle config)
+          APK_FILE=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          
+          # Fallback to debug if release fails/isn't found
+          if [ -z "$APK_FILE" ]; then
+            echo "Release APK not found. Checking for debug APK..."
+            APK_FILE=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          fi
+          
+          echo "Found APK: $APK_FILE"
+          mv "$APK_FILE" SimpleKeyboard.apk
+
+      - name: Upload to GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "SimpleKeyboard.apk"
+          tag: "latest"
+          name: "Latest Simple Keyboard Build"
+          body: "Automated release build of Simple Keyboard (v6.3)."
+          allowUpdates: true        # Updates the existing 'latest' release instead of failing
+          replacesArtifacts: true   # Deletes the old APK and uploads the new one
+          token: ${{ secrets.GITHUB_TOKEN }}
