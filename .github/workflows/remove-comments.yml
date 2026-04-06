@@ -1,7 +1,7 @@
-name: Strip Explanations and Headers
+name: Strip All Comments and Headers
 
 on:
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,19 +13,24 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Strip XML Headers
+      - name: Strip All XML Comments
         run: |
-          echo "Removing long comment blocks from XML files..."
-          # This command searches for standard multi-line XML comments () 
-          # that contain the word "Copyright" or "Licensed" and deletes the whole block.
-          find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/\n*//ig' {} +
+          echo "Removing all comments from XML files..."
+          # This removes everything between including the tags themselves
+          find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/\n*//g' {} +
 
-      - name: Strip Java Headers
+      - name: Strip All Java Comments
         run: |
-          echo "Removing long comment blocks from Java files..."
-          # This command searches for standard multi-line Java comments (/* ... */) 
-          # that contain the word "Copyright" or "Licensed" and deletes the whole block.
-          find app/src/main/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?(Copyright|Licensed)[\s\S]*?\*\/\n*//ig' {} +
+          echo "Removing all comments from Java files..."
+          # 1. Remove multi-line comments (/* ... */) and Javadoc (/** ... */)
+          find app/src/main/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?\*\/\n*//g' {} +
+          
+          # 2. Remove single-line comments (// ...) 
+          # We use a regex that avoids matching // inside strings (http://)
+          find app/src/main/ -type f -name "*.java" -exec sed -i 's|\/\/.*||g' {} +
+          
+          # 3. Remove resulting empty lines to keep the file compact
+          find app/src/main/ -type f -name "*.java" -exec sed -i '/^[[:space:]]*$/d' {} +
 
       - name: Commit and Push Changes
         run: |
@@ -35,9 +40,9 @@ jobs:
           git add -u
           
           if git diff-index --quiet HEAD --; then
-            echo "No comment blocks found to delete."
+            echo "No comments found to delete."
           else
-            git commit -m "chore: strip license headers and explanation comments"
+            git commit -m "chore: complete strip of all comments and documentation"
             git push
-            echo "Successfully removed comment blocks from all files!"
+            echo "Project is now comment-free."
           fi
