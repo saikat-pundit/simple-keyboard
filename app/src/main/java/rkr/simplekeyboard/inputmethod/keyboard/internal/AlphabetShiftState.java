@@ -1,19 +1,14 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
-
 import android.util.Log;
-
 public final class AlphabetShiftState {
     private static final String TAG = AlphabetShiftState.class.getSimpleName();
     private static final boolean DEBUG = false;
-
     private static final int UNSHIFTED = 0;
     private static final int MANUAL_SHIFTED = 1;
     private static final int AUTOMATIC_SHIFTED = 2;
     private static final int SHIFT_LOCKED = 3;
     private static final int SHIFT_LOCK_SHIFTED = 4;
-
     private int mState = UNSHIFTED;
-
     public void setShifted(boolean newShiftState) {
         final int oldState = mState;
         if (newShiftState) {
@@ -39,7 +34,6 @@ public final class AlphabetShiftState {
         if (DEBUG)
             Log.d(TAG, "setShifted(" + newShiftState + "): " + toString(oldState) + " > " + this);
     }
-
     public void setShiftLocked(boolean newShiftLockState) {
         final int oldState = mState;
         if (newShiftLockState) {
@@ -57,36 +51,28 @@ public final class AlphabetShiftState {
             Log.d(TAG, "setShiftLocked(" + newShiftLockState + "): " + toString(oldState)
                     + " > " + this);
     }
-
     public void setAutomaticShifted() {
         mState = AUTOMATIC_SHIFTED;
     }
-
     public boolean isShiftedOrShiftLocked() {
         return mState != UNSHIFTED;
     }
-
     public boolean isShiftLocked() {
         return mState == SHIFT_LOCKED || mState == SHIFT_LOCK_SHIFTED;
     }
-
     public boolean isShiftLockShifted() {
         return mState == SHIFT_LOCK_SHIFTED;
     }
-
     public boolean isAutomaticShifted() {
         return mState == AUTOMATIC_SHIFTED;
     }
-
     public boolean isManualShifted() {
         return mState == MANUAL_SHIFTED || mState == SHIFT_LOCK_SHIFTED;
     }
-
     @Override
     public String toString() {
         return toString(mState);
     }
-
     private static String toString(int state) {
         switch (state) {
         case UNSHIFTED: return "UNSHIFTED";

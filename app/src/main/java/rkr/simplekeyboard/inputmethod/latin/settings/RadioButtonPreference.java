@@ -1,26 +1,14 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.content.Context;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RadioButton;
-
 import rkr.simplekeyboard.inputmethod.R;
-
-/**
- * Radio Button preference
- */
 public class RadioButtonPreference extends Preference {
     interface OnRadioButtonClickedListener {
-        /**
-         * Called when this preference needs to be saved its state.
-         *
-         * @param preference This preference.
-         */
-        void onRadioButtonClicked(RadioButtonPreference preference);
+                void onRadioButtonClicked(RadioButtonPreference preference);
     }
-
     private boolean mIsSelected;
     private RadioButton mRadioButton;
     private OnRadioButtonClickedListener mListener;
@@ -30,31 +18,25 @@ public class RadioButtonPreference extends Preference {
             callListenerOnRadioButtonClicked();
         }
     };
-
     public RadioButtonPreference(final Context context) {
         this(context, null);
     }
-
     public RadioButtonPreference(final Context context, final AttributeSet attrs) {
         this(context, attrs, android.R.attr.preferenceStyle);
     }
-
     public RadioButtonPreference(final Context context, final AttributeSet attrs,
             final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWidgetLayoutResource(R.layout.radio_button_preference_widget);
     }
-
     public void setOnRadioButtonClickedListener(final OnRadioButtonClickedListener listener) {
         mListener = listener;
     }
-
     void callListenerOnRadioButtonClicked() {
         if (mListener != null) {
             mListener.onRadioButtonClicked(this);
         }
     }
-
     @Override
     protected void onBindView(final View view) {
         super.onBindView(view);
@@ -63,7 +45,6 @@ public class RadioButtonPreference extends Preference {
         mRadioButton.setOnClickListener(mClickListener);
         view.setOnClickListener(mClickListener);
     }
-
     public void setSelected(final boolean selected) {
         if (selected == mIsSelected) {
             return;

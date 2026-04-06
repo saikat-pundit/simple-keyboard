@@ -1,15 +1,11 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
-
 import android.util.Log;
-
-/* package */ final class ShiftKeyState extends ModifierKeyState {
-    private static final int PRESSING_ON_SHIFTED = 3; // both temporary shifted & shift locked
+ final class ShiftKeyState extends ModifierKeyState {
+    private static final int PRESSING_ON_SHIFTED = 3; 
     private static final int IGNORING = 4;
-
     public ShiftKeyState(String name) {
         super(name);
     }
-
     @Override
     public void onOtherKeyPressed() {
         int oldState = mState;
@@ -21,24 +17,19 @@ import android.util.Log;
         if (DEBUG)
             Log.d(TAG, mName + ".onOtherKeyPressed: " + toString(oldState) + " > " + this);
     }
-
     public void onPressOnShifted() {
         mState = PRESSING_ON_SHIFTED;
     }
-
     public boolean isPressingOnShifted() {
         return mState == PRESSING_ON_SHIFTED;
     }
-
     public boolean isIgnoring() {
         return mState == IGNORING;
     }
-
     @Override
     public String toString() {
         return toString(mState);
     }
-
     @Override
     protected String toString(int state) {
         switch (state) {

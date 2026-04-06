@@ -1,35 +1,18 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
-
 import android.text.TextUtils;
 import android.util.SparseIntArray;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
-
 import rkr.simplekeyboard.inputmethod.keyboard.Key;
 import rkr.simplekeyboard.inputmethod.latin.common.CollectionUtils;
 import rkr.simplekeyboard.inputmethod.latin.common.Constants;
 import rkr.simplekeyboard.inputmethod.latin.common.StringUtils;
-
-/**
- * The more key specification object. The more keys are an array of {@link MoreKeySpec}.
- *
- * The more keys specification is comma separated "key specification" each of which represents one
- * "more key".
- * The key specification might have label or string resource reference in it. These references are
- * expanded before parsing comma.
- * Special character, comma ',' backslash '\' can be escaped by '\' character.
- * Note that the '\' is also parsed by XML parser and {@link MoreKeySpec#splitKeySpecs(String)}
- * as well.
- */
-// TODO: Should extend the key specification object.
 public final class MoreKeySpec {
     public final int mCode;
     public final String mLabel;
     public final String mOutputText;
     public final int mIconId;
-
     public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase,
             final Locale locale) {
         if (moreKeySpec.isEmpty()) {
@@ -41,8 +24,6 @@ public final class MoreKeySpec {
         final int code = needsToUpperCase ? StringUtils.toTitleCaseOfKeyCode(codeInSpec, locale)
                 : codeInSpec;
         if (code == Constants.CODE_UNSPECIFIED) {
-            // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
-            // upper case representation ("SS").
             mCode = Constants.CODE_OUTPUT_TEXT;
             mOutputText = mLabel;
         } else {
@@ -53,15 +34,13 @@ public final class MoreKeySpec {
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
     }
-
     public Key buildKey(final float x, final float y, final float width, final float height,
                         final float leftPadding, final float rightPadding, final float topPadding,
                         final float bottomPadding, final int labelFlags) {
-        return new Key(mLabel, mIconId, mCode, mOutputText, null /* hintLabel */, labelFlags,
+        return new Key(mLabel, mIconId, mCode, mOutputText, null , labelFlags,
                 Key.BACKGROUND_TYPE_NORMAL, x, y, width, height, leftPadding, rightPadding,
                 topPadding, bottomPadding);
     }
-
     @Override
     public int hashCode() {
         int hashCode = 31 + mCode;
@@ -72,7 +51,6 @@ public final class MoreKeySpec {
         hashCode = hashCode * 31 + (outputText == null ? 0 : outputText.hashCode());
         return hashCode;
     }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -87,7 +65,6 @@ public final class MoreKeySpec {
         }
         return false;
     }
-
     @Override
     public String toString() {
         final String label = (mIconId == KeyboardIconsSet.ICON_UNDEFINED ? mLabel
@@ -99,11 +76,9 @@ public final class MoreKeySpec {
         }
         return label + "|" + output;
     }
-
     public static class LettersOnBaseLayout {
         private final SparseIntArray mCodes = new SparseIntArray();
         private final HashSet<String> mTexts = new HashSet<>();
-
         public void addLetter(final Key key) {
             final int code = key.getCode();
             if (Character.isAlphabetic(code)) {
@@ -112,7 +87,6 @@ public final class MoreKeySpec {
                 mTexts.add(key.getOutputText());
             }
         }
-
         public boolean contains(final MoreKeySpec moreKey) {
             final int code = moreKey.mCode;
             if (Character.isAlphabetic(code) && mCodes.indexOfKey(code) >= 0) {
@@ -123,7 +97,6 @@ public final class MoreKeySpec {
             return false;
         }
     }
-
     public static MoreKeySpec[] removeRedundantMoreKeys(final MoreKeySpec[] moreKeys,
             final LettersOnBaseLayout lettersOnBaseLayout) {
         if (moreKeys == null) {
@@ -144,53 +117,31 @@ public final class MoreKeySpec {
         }
         return filteredMoreKeys.toArray(new MoreKeySpec[size]);
     }
-
-    // Constants for parsing.
     private static final char COMMA = Constants.CODE_COMMA;
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;
     private static final String ADDITIONAL_MORE_KEY_MARKER =
             StringUtils.newSingleCodePointString(Constants.CODE_PERCENT);
-
-    /**
-     * Split the text containing multiple key specifications separated by commas into an array of
-     * key specifications.
-     * A key specification can contain a character escaped by the backslash character, including a
-     * comma character.
-     * Note that an empty key specification will be eliminated from the result array.
-     *
-     * @param text the text containing multiple key specifications.
-     * @return an array of key specification text. Null if the specified <code>text</code> is empty
-     * or has no key specifications.
-     */
-    public static String[] splitKeySpecs(final String text) {
+        public static String[] splitKeySpecs(final String text) {
         if (TextUtils.isEmpty(text)) {
             return null;
         }
         final int size = text.length();
-        // Optimization for one-letter key specification.
         if (size == 1) {
             return text.charAt(0) == COMMA ? null : new String[] { text };
         }
-
         ArrayList<String> list = null;
         int start = 0;
-        // The characters in question in this loop are COMMA and BACKSLASH. These characters never
-        // match any high or low surrogate character. So it is OK to iterate through with char
-        // index.
         for (int pos = 0; pos < size; pos++) {
             final char c = text.charAt(pos);
             if (c == COMMA) {
-                // Skip empty entry.
                 if (pos - start > 0) {
                     if (list == null) {
                         list = new ArrayList<>();
                     }
                     list.add(text.substring(start, pos));
                 }
-                // Skip comma
                 start = pos + 1;
             } else if (c == BACKSLASH) {
-                // Skip escape character and escaped character.
                 pos++;
             }
         }
@@ -203,9 +154,7 @@ public final class MoreKeySpec {
         }
         return list.toArray(new String[list.size()]);
     }
-
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
     private static String[] filterOutEmptyString(final String[] array) {
         if (array == null) {
             return EMPTY_STRING_ARRAY;
@@ -226,7 +175,6 @@ public final class MoreKeySpec {
         }
         return out.toArray(new String[out.size()]);
     }
-
     public static String[] insertAdditionalMoreKeys(final String[] moreKeySpecs,
             final String[] additionalMoreKeySpecs) {
         final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
@@ -239,7 +187,6 @@ public final class MoreKeySpec {
             final String moreKeySpec = moreKeys[moreKeyIndex];
             if (moreKeySpec.equals(ADDITIONAL_MORE_KEY_MARKER)) {
                 if (additionalIndex < additionalCount) {
-                    // Replace '%' marker with additional more key specification.
                     final String additionalMoreKey = additionalMoreKeys[additionalIndex];
                     if (out != null) {
                         out.add(additionalMoreKey);
@@ -248,7 +195,6 @@ public final class MoreKeySpec {
                     }
                     additionalIndex++;
                 } else {
-                    // Filter out excessive '%' marker.
                     if (out == null) {
                         out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeyIndex);
                     }
@@ -260,15 +206,11 @@ public final class MoreKeySpec {
             }
         }
         if (additionalCount > 0 && additionalIndex == 0) {
-            // No '%' marker is found in more keys.
-            // Insert all additional more keys to the head of more keys.
             out = CollectionUtils.arrayAsList(additionalMoreKeys, additionalIndex, additionalCount);
             for (int i = 0; i < moreKeysCount; i++) {
                 out.add(moreKeys[i]);
             }
         } else if (additionalIndex < additionalCount) {
-            // The number of '%' markers are less than additional more keys.
-            // Append remained additional more keys to the tail of more keys.
             out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeysCount);
             for (int i = additionalIndex; i < additionalCount; i++) {
                 out.add(additionalMoreKeys[additionalIndex]);
@@ -282,7 +224,6 @@ public final class MoreKeySpec {
             return null;
         }
     }
-
     public static int getIntValue(final String[] moreKeys, final String key,
             final int defaultValue) {
         if (moreKeys == null) {
@@ -309,7 +250,6 @@ public final class MoreKeySpec {
         }
         return value;
     }
-
     public static boolean getBooleanValue(final String[] moreKeys, final String key) {
         if (moreKeys == null) {
             return false;

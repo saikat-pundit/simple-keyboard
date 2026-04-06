@@ -1,5 +1,4 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,9 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import rkr.simplekeyboard.inputmethod.R;
-
 public final class SeekBarDialogPreference extends DialogPreference
         implements SeekBar.OnSeekBarChangeListener {
     public interface ValueProxy {
@@ -22,16 +19,12 @@ public final class SeekBarDialogPreference extends DialogPreference
         String getValueText(final int value);
         void feedbackValue(final int value);
     }
-
     private final int mMaxValue;
     private final int mMinValue;
     private final int mStepValue;
-
     private TextView mValueView;
     private SeekBar mSeekBar;
-
     private ValueProxy mValueProxy;
-
     public SeekBarDialogPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         final TypedArray a = context.obtainStyledAttributes(
@@ -42,13 +35,11 @@ public final class SeekBarDialogPreference extends DialogPreference
         a.recycle();
         setDialogLayoutResource(R.layout.seek_bar_dialog);
     }
-
     public void setInterface(final ValueProxy proxy) {
         mValueProxy = proxy;
         final int value = mValueProxy.readValue(getKey());
         setSummary(mValueProxy.getValueText(value));
     }
-
     @Override
     protected View onCreateDialogView() {
         final View view = super.onCreateDialogView();
@@ -58,15 +49,12 @@ public final class SeekBarDialogPreference extends DialogPreference
         mValueView = (TextView)view.findViewById(R.id.seek_bar_dialog_value);
         return view;
     }
-
     private int getProgressFromValue(final int value) {
         return value - mMinValue;
     }
-
     private int getValueFromProgress(final int progress) {
         return progress + mMinValue;
     }
-
     private int clipValue(final int value) {
         final int clippedValue = Math.min(mMaxValue, Math.max(mMinValue, value));
         if (mStepValue <= 1) {
@@ -74,25 +62,21 @@ public final class SeekBarDialogPreference extends DialogPreference
         }
         return clippedValue - (clippedValue % mStepValue);
     }
-
     private int getClippedValueFromProgress(final int progress) {
         return clipValue(getValueFromProgress(progress));
     }
-
     @Override
     protected void onBindDialogView(final View view) {
         final int value = mValueProxy.readValue(getKey());
         mValueView.setText(mValueProxy.getValueText(value));
         mSeekBar.setProgress(getProgressFromValue(clipValue(value)));
     }
-
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
         builder.setPositiveButton(android.R.string.ok, this)
             .setNegativeButton(android.R.string.cancel, this)
             .setNeutralButton(R.string.button_default, this);
     }
-
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         super.onClick(dialog, which);
@@ -110,16 +94,13 @@ public final class SeekBarDialogPreference extends DialogPreference
             return;
         }
     }
-
     @Override
     public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
         final int value = getClippedValueFromProgress(progress);
         mValueView.setText(mValueProxy.getValueText(value));
     }
-
     @Override
     public void onStartTrackingTouch(final SeekBar seekBar) {}
-
     @Override
     public void onStopTrackingTouch(final SeekBar seekBar) {
         mValueProxy.feedbackValue(getClippedValueFromProgress(seekBar.getProgress()));

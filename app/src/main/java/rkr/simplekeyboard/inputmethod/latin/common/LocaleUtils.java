@@ -1,45 +1,19 @@
 package rkr.simplekeyboard.inputmethod.latin.common;
-
 import android.content.res.Resources;
 import android.os.LocaleList;
 import android.text.TextUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import rkr.simplekeyboard.inputmethod.latin.utils.LocaleResourceUtils;
-
-/**
- * A class to help with handling Locales in string form.
- *
- * This file has the same meaning and features (and shares all of its code) with the one with the
- * same name in Latin IME. They need to be kept synchronized; for any update/bugfix to
- * this file, consider also updating/fixing the version in Latin IME.
- */
 public final class LocaleUtils {
     private LocaleUtils() {
-        // Intentional empty constructor for utility class.
     }
-
-    // Locale match level constants.
-    // A higher level of match is guaranteed to have a higher numerical value.
-    // Some room is left within constants to add match cases that may arise necessary
-    // in the future, for example differentiating between the case where the countries
-    // are both present and different, and the case where one of the locales does not
-    // specify the countries. This difference is not needed now.
-
     private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
-
-    /**
-     * Creates a locale from a string specification.
-     * @param localeString a string specification of a locale, in a format of "ll_cc_variant" where
-     * "ll" is a language code, "cc" is a country code.
-     */
-    public static Locale constructLocaleFromString(final String localeString) {
+        public static Locale constructLocaleFromString(final String localeString) {
         synchronized (sLocaleCache) {
             if (sLocaleCache.containsKey(localeString)) {
                 return sLocaleCache.get(localeString);
@@ -47,25 +21,18 @@ public final class LocaleUtils {
             final String[] elements = localeString.split("_", 3);
             final Locale locale;
             if (elements.length == 1) {
-                locale = new Locale(elements[0] /* language */);
+                locale = new Locale(elements[0] );
             } else if (elements.length == 2) {
-                locale = new Locale(elements[0] /* language */, elements[1] /* country */);
-            } else { // localeParams.length == 3
-                locale = new Locale(elements[0] /* language */, elements[1] /* country */,
-                        elements[2] /* variant */);
+                locale = new Locale(elements[0] , elements[1] );
+            } else { 
+                locale = new Locale(elements[0] , elements[1] ,
+                        elements[2] );
             }
             sLocaleCache.put(localeString, locale);
             return locale;
         }
     }
-
-    /**
-     * Creates a string specification for a locale.
-     * @param locale the locale.
-     * @return a string specification of a locale, in a format of "ll_cc_variant" where "ll" is a
-     * language code, "cc" is a country code.
-     */
-    public static String getLocaleString(final Locale locale) {
+        public static String getLocaleString(final Locale locale) {
         if (!TextUtils.isEmpty(locale.getVariant())) {
             return locale.getLanguage() + "_" + locale.getCountry() + "_" + locale.getVariant();
         }
@@ -74,22 +41,8 @@ public final class LocaleUtils {
         }
         return locale.getLanguage();
     }
-
-    /**
-     * Get the closest matching locale. This searches by:
-     * 1. {@link Locale#equals(Object)}
-     * 2. Language, Country, and Variant match
-     * 3. Language and Country match
-     * 4. Language matches
-     * @param localeToMatch the locale to match.
-     * @param options a collection of locales to find the best match.
-     * @return the locale from the collection that is the best match for the specified locale or
-     * null if nothing matches.
-     */
-    public static Locale findBestLocale(final Locale localeToMatch,
+        public static Locale findBestLocale(final Locale localeToMatch,
                                         final Collection<Locale> options) {
-        // Find the best subtype based on a straightforward matching algorithm.
-        // TODO: Use LocaleList#getFirstMatch() instead.
         for (final Locale locale : options) {
             if (locale.equals(localeToMatch)) {
                 return locale;
@@ -115,12 +68,7 @@ public final class LocaleUtils {
         }
         return null;
     }
-
-    /**
-     * Get the list of locales enabled in the system.
-     * @return the list of locales enabled in the system.
-     */
-    public static List<Locale> getSystemLocales() {
+        public static List<Locale> getSystemLocales() {
         ArrayList<Locale> locales = new ArrayList<>();
         LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
         for (int i = 0; i < localeList.size(); i++) {
@@ -128,16 +76,10 @@ public final class LocaleUtils {
         }
         return locales;
     }
-
-    /**
-     * Comparator for {@link Locale} to order them alphabetically
-     * first.
-     */
-    public static class LocaleComparator implements Comparator<Locale> {
+        public static class LocaleComparator implements Comparator<Locale> {
         @Override
         public int compare(Locale a, Locale b) {
             if (a.equals(b)) {
-                // ensure that this is consistent with equals
                 return 0;
             }
             final String aDisplay =
@@ -148,7 +90,6 @@ public final class LocaleUtils {
             if (result != 0) {
                 return result;
             }
-            // ensure that non-equal objects are distinguished to be consistent with equals
             return a.hashCode() > b.hashCode() ? 1 : -1;
         }
     }

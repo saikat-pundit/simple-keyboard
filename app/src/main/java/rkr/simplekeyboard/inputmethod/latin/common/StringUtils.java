@@ -1,32 +1,22 @@
 package rkr.simplekeyboard.inputmethod.latin.common;
-
 import android.text.TextUtils;
-
 import java.util.Arrays;
 import java.util.Locale;
-
 public final class StringUtils {
     private StringUtils() {
-        // This utility class is not publicly instantiable.
     }
-
     public static int codePointCount(final CharSequence text) {
         if (TextUtils.isEmpty(text)) {
             return 0;
         }
         return Character.codePointCount(text, 0, text.length());
     }
-
     public static String newSingleCodePointString(final int codePoint) {
         if (Character.charCount(codePoint) == 1) {
-            // Optimization: avoid creating a temporary array for characters that are
-            // represented by a single char value
             return String.valueOf((char) codePoint);
         }
-        // For surrogate pair
         return new String(Character.toChars(codePoint));
     }
-
     public static boolean containsInArray(final String text,
             final String[] array) {
         for (final String element : array) {
@@ -36,21 +26,11 @@ public final class StringUtils {
         }
         return false;
     }
-
     public static int[] toCodePointArray(final CharSequence charSequence) {
         return toCodePointArray(charSequence, 0, charSequence.length());
     }
-
     private static final int[] EMPTY_CODEPOINTS = {};
-
-    /**
-     * Converts a range of a string to an array of code points.
-     * @param charSequence the source string.
-     * @param startIndex the start index inside the string in java chars, inclusive.
-     * @param endIndex the end index inside the string in java chars, exclusive.
-     * @return a new array of code points. At most endIndex - startIndex, but possibly less.
-     */
-    public static int[] toCodePointArray(final CharSequence charSequence,
+        public static int[] toCodePointArray(final CharSequence charSequence,
             final int startIndex, final int endIndex) {
         final int length = charSequence.length();
         if (length <= 0) {
@@ -59,49 +39,26 @@ public final class StringUtils {
         final int[] codePoints =
                 new int[Character.codePointCount(charSequence, startIndex, endIndex)];
         copyCodePointsAndReturnCodePointCount(codePoints, charSequence, startIndex, endIndex,
-                false /* downCase */);
+                false );
         return codePoints;
     }
-
-    /**
-     * Copies the codepoints in a CharSequence to an int array.
-     *
-     * This method assumes there is enough space in the array to store the code points. The size
-     * can be measured with Character#codePointCount(CharSequence, int, int) before passing to this
-     * method. If the int array is too small, an ArrayIndexOutOfBoundsException will be thrown.
-     * Also, this method makes no effort to be thread-safe. Do not modify the CharSequence while
-     * this method is running, or the behavior is undefined.
-     * This method can optionally downcase code points before copying them, but it pays no attention
-     * to locale while doing so.
-     *
-     * @param destination the int array.
-     * @param charSequence the CharSequence.
-     * @param startIndex the start index inside the string in java chars, inclusive.
-     * @param endIndex the end index inside the string in java chars, exclusive.
-     * @param downCase if this is true, code points will be downcased before being copied.
-     * @return the number of copied code points.
-     */
-    public static int copyCodePointsAndReturnCodePointCount(final int[] destination,
+        public static int copyCodePointsAndReturnCodePointCount(final int[] destination,
             final CharSequence charSequence, final int startIndex, final int endIndex,
             final boolean downCase) {
         int destIndex = 0;
         for (int index = startIndex; index < endIndex;
                 index = Character.offsetByCodePoints(charSequence, index, 1)) {
             final int codePoint = Character.codePointAt(charSequence, index);
-            // TODO: stop using this, as it's not aware of the locale and does not always do
-            // the right thing.
             destination[destIndex] = downCase ? Character.toLowerCase(codePoint) : codePoint;
             destIndex++;
         }
         return destIndex;
     }
-
     public static int[] toSortedCodePointArray(final String string) {
         final int[] codePoints = toCodePointArray(string);
         Arrays.sort(codePoints);
         return codePoints;
     }
-
     public static boolean isIdenticalAfterUpcase(final String text) {
         final int length = text.length();
         int i = 0;
@@ -114,7 +71,6 @@ public final class StringUtils {
         }
         return true;
     }
-
     public static boolean isIdenticalAfterDowncase(final String text) {
         final int length = text.length();
         int i = 0;
@@ -127,7 +83,6 @@ public final class StringUtils {
         }
         return true;
     }
-
     public static boolean isIdenticalAfterCapitalizeEachWord(final String text) {
         boolean needsCapsNext = true;
         final int len = text.length();
@@ -139,14 +94,10 @@ public final class StringUtils {
                     return false;
                 }
             }
-            // We need a capital letter next if this is a whitespace.
             needsCapsNext = Character.isWhitespace(codePoint);
         }
         return true;
     }
-
-    // TODO: like capitalizeFirst*, this does not work perfectly for Dutch because of the IJ digraph
-    // which should be capitalized together in *some* cases.
     public static String capitalizeEachWord(final String text, final Locale locale) {
         final StringBuilder builder = new StringBuilder();
         boolean needsCapsNext = true;
@@ -158,23 +109,17 @@ public final class StringUtils {
             } else {
                 builder.append(toLowerCaseOfKeyLabel(nextChar, locale));
             }
-            // We need a capital letter next if this is a whitespace.
             needsCapsNext = Character.isWhitespace(nextChar.codePointAt(0));
         }
         return builder.toString();
     }
-
     private static final String LANGUAGE_GREEK = "el";
-
     private static Locale getLocaleUsedForToTitleCase(final Locale locale) {
-        // In Greek locale {@link String#toUpperCase(Locale)} eliminates accents from its result.
-        // In order to get accented upper case letter, {@link Locale#ROOT} should be used.
         if (LANGUAGE_GREEK.equals(locale.getLanguage())) {
             return Locale.ROOT;
         }
         return locale;
     }
-
     public static String toLowerCase(final String text, final Locale locale) {
         final StringBuilder builder = new StringBuilder();
         final int len = text.length();
@@ -184,7 +129,6 @@ public final class StringUtils {
         }
         return builder.toString();
     }
-
     public static String toUpperCase(final String text, final Locale locale) {
         final StringBuilder builder = new StringBuilder();
         final int len = text.length();
@@ -194,33 +138,28 @@ public final class StringUtils {
         }
         return builder.toString();
     }
-
     public static String toLowerCaseOfKeyLabel(final String label, final Locale locale) {
         if (label == null) {
             return null;
         }
         switch (label) {
             case "\u1E9E":
-                // sharp S (ß, U+00DF) => ẞ (U+1E9E), not 'SS'.
                 return "\u00DF";
             default:
                 return label.toLowerCase(getLocaleUsedForToTitleCase(locale));
         }
     }
-
     public static String toTitleCaseOfKeyLabel(final String label, final Locale locale) {
         if (label == null) {
             return null;
         }
         switch (label) {
             case "\u00DF":
-                // sharp S (ß, U+00DF) => ẞ (U+1E9E), not 'SS'.
                 return "\u1E9E";
             default:
                 return label.toUpperCase(getLocaleUsedForToTitleCase(locale));
         }
     }
-
     public static int toTitleCaseOfKeyCode(final int code, final Locale locale) {
         if (!Constants.isLetterCode(code)) {
             return code;

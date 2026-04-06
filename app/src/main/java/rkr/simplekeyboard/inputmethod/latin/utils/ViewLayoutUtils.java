@@ -1,5 +1,4 @@
 package rkr.simplekeyboard.inputmethod.latin.utils;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -8,12 +7,9 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 public final class ViewLayoutUtils {
     private ViewLayoutUtils() {
-        // This utility class is not publicly instantiable.
     }
-
     public static MarginLayoutParams newLayoutParam(final ViewGroup placer, final int width,
             final int height) {
         if (placer instanceof FrameLayout) {
@@ -27,7 +23,6 @@ public final class ViewLayoutUtils {
                     + placer.getClass().getName());
         }
     }
-
     public static void placeViewAt(final View view, final int x, final int y, final int w,
             final int h) {
         final ViewGroup.LayoutParams lp = view.getLayoutParams();
@@ -38,7 +33,6 @@ public final class ViewLayoutUtils {
             marginLayoutParams.setMargins(x, y, -50, 0);
         }
     }
-
     public static void updateLayoutHeightOf(final Window window, final int layoutHeight) {
         final WindowManager.LayoutParams params = window.getAttributes();
         if (params != null && params.height != layoutHeight) {
@@ -46,7 +40,6 @@ public final class ViewLayoutUtils {
             window.setAttributes(params);
         }
     }
-
     public static void updateLayoutHeightOf(final View view, final int layoutHeight) {
         final ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params != null && params.height != layoutHeight) {
@@ -54,7 +47,6 @@ public final class ViewLayoutUtils {
             view.setLayoutParams(params);
         }
     }
-
     public static void updateLayoutGravityOf(final View view, final int layoutGravity) {
         final ViewGroup.LayoutParams lp = view.getLayoutParams();
         if (lp instanceof LinearLayout.LayoutParams) {

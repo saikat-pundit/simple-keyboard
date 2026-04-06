@@ -1,5 +1,4 @@
 package rkr.simplekeyboard.inputmethod.latin.utils;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,14 +6,10 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
-
 public final class ApplicationUtils {
     private static final String TAG = ApplicationUtils.class.getSimpleName();
-
     private ApplicationUtils() {
-        // This utility class is not publicly instantiable.
     }
-
     public static int getActivityTitleResId(final Context context,
             final Class<? extends Activity> cls) {
         final ComponentName cn = new ComponentName(context, cls);
@@ -28,12 +23,7 @@ public final class ApplicationUtils {
         }
         return 0;
     }
-
-    /**
-     * A utility method to get the application's PackageInfo.versionName
-     * @return the application's PackageInfo.versionName
-     */
-    public static String getVersionName(final Context context) {
+        public static String getVersionName(final Context context) {
         try {
             if (context == null) {
                 return "";
@@ -46,12 +36,7 @@ public final class ApplicationUtils {
         }
         return "";
     }
-
-    /**
-     * A utility method to get the application's PackageInfo.versionCode
-     * @return the application's PackageInfo.versionCode
-     */
-    public static int getVersionCode(final Context context) {
+        public static int getVersionCode(final Context context) {
         try {
             if (context == null) {
                 return 0;

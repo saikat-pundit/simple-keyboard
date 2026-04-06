@@ -1,24 +1,16 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
-
 import java.util.HashMap;
-
 import rkr.simplekeyboard.inputmethod.latin.common.Constants;
-
 public final class KeyboardCodesSet {
     public static final String PREFIX_CODE = "!code/";
-
     private static final HashMap<String, Integer> sNameToIdMap = new HashMap<>();
-
     private KeyboardCodesSet() {
-        // This utility class is not publicly instantiable.
     }
-
     public static int getCode(final String name) {
         Integer id = sNameToIdMap.get(name);
         if (id == null) throw new RuntimeException("Unknown key code: " + name);
         return DEFAULT[id];
     }
-
     private static final String[] ID_TO_NAME = {
         "key_tab",
         "key_enter",
@@ -38,7 +30,6 @@ public final class KeyboardCodesSet {
         "key_right",
         "key_unspecified",
     };
-
     private static final int[] DEFAULT = {
         Constants.CODE_TAB,
         Constants.CODE_ENTER,
@@ -56,7 +47,6 @@ public final class KeyboardCodesSet {
         Constants.CODE_LANGUAGE_SWITCH,
         Constants.CODE_UNSPECIFIED,
     };
-
     static {
         for (int i = 0; i < ID_TO_NAME.length; i++) {
             sNameToIdMap.put(ID_TO_NAME[i], i);

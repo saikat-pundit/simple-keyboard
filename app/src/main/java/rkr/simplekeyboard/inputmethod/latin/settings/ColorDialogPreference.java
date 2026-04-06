@@ -1,5 +1,4 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,9 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import rkr.simplekeyboard.inputmethod.R;
-
 public final class ColorDialogPreference extends DialogPreference
         implements SeekBar.OnSeekBarChangeListener {
     public interface ValueProxy {
@@ -20,23 +17,18 @@ public final class ColorDialogPreference extends DialogPreference
         void writeDefaultValue(final String key);
         void writeValue(final int value, final String key);
     }
-
     private TextView mValueView;
     private SeekBar mSeekBarRed;
     private SeekBar mSeekBarGreen;
     private SeekBar mSeekBarBlue;
-
     private ValueProxy mValueProxy;
-
     public ColorDialogPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setDialogLayoutResource(R.layout.color_dialog);
     }
-
     public void setInterface(final ValueProxy proxy) {
         mValueProxy = proxy;
     }
-
     @Override
     protected View onCreateDialogView() {
         final View view = super.onCreateDialogView();
@@ -58,7 +50,6 @@ public final class ColorDialogPreference extends DialogPreference
         mValueView = (TextView)view.findViewById(R.id.seek_bar_dialog_value);
         return view;
     }
-
     @Override
     protected void onBindDialogView(final View view) {
         final int color = mValueProxy.readValue(getKey());
@@ -67,14 +58,12 @@ public final class ColorDialogPreference extends DialogPreference
         mSeekBarBlue.setProgress(Color.blue(color));
         setHeaderText(color);
     }
-
     @Override
     protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
         builder.setPositiveButton(android.R.string.ok, this)
                 .setNegativeButton(android.R.string.cancel, this)
                 .setNeutralButton(R.string.button_default, this);
     }
-
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
         super.onClick(dialog, which);
@@ -94,7 +83,6 @@ public final class ColorDialogPreference extends DialogPreference
             return;
         }
     }
-
     @Override
     public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
         int color = Color.rgb(
@@ -103,22 +91,18 @@ public final class ColorDialogPreference extends DialogPreference
                 mSeekBarBlue.getProgress());
         setHeaderText(color);
     }
-
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
     }
-
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
     }
-
     private void setHeaderText(int color) {
         mValueView.setText(getValueText(color));
         boolean bright = Color.red(color) + Color.green(color) + Color.blue(color) > 128 * 3;
         mValueView.setTextColor(bright ? Color.BLACK : Color.WHITE);
         mValueView.setBackgroundColor(color);
     }
-
     private String getValueText(final int value) {
         String temp = Integer.toHexString(value);
         for (; temp.length() < 8; temp = "0" + temp);

@@ -1,21 +1,15 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
-
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseIntArray;
-
 import java.util.HashMap;
-
 import rkr.simplekeyboard.inputmethod.R;
-
 public final class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
-
     public static final String PREFIX_ICON = "!icon/";
     public static final int ICON_UNDEFINED = 0;
     private static final int ATTR_UNDEFINED = 0;
-
     private static final String NAME_UNDEFINED = "undefined";
     public static final String NAME_SHIFT_KEY = "shift_key";
     public static final String NAME_SHIFT_KEY_SHIFTED = "shift_key_shifted";
@@ -35,12 +29,8 @@ public final class KeyboardIconsSet {
     public static final String NAME_LANGUAGE_SWITCH_KEY = "language_switch_key";
     public static final String NAME_ZWNJ_KEY = "zwnj_key";
     public static final String NAME_ZWJ_KEY = "zwj_key";
-
     private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
-
-    // Icon name to icon id map.
     private static final HashMap<String, Integer> sNameToIdsMap = new HashMap<>();
-
     private static final Object[] NAMES_AND_ATTR_IDS = {
         NAME_UNDEFINED,                   ATTR_UNDEFINED,
         NAME_SHIFT_KEY,                   R.drawable.sym_keyboard_shift,
@@ -62,11 +52,9 @@ public final class KeyboardIconsSet {
         NAME_ZWNJ_KEY,                    R.drawable.sym_keyboard_zwnj,
         NAME_ZWJ_KEY,                     R.drawable.sym_keyboard_zwj,
     };
-
     private static final int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
     private static final String[] ICON_NAMES = new String[NUM_ICONS];
     private final Drawable[] mIcons = new Drawable[NUM_ICONS];
-
     static {
         int iconId = ICON_UNDEFINED;
         for (int i = 0; i < NAMES_AND_ATTR_IDS.length; i += 2) {
@@ -80,7 +68,6 @@ public final class KeyboardIconsSet {
             iconId++;
         }
     }
-
     public void loadIcons(final Resources resources, final Resources.Theme theme) {
         final int size = ATTR_ID_TO_ICON_ID.size();
         for (int index = 0; index < size; index++) {
@@ -97,15 +84,12 @@ public final class KeyboardIconsSet {
             }
         }
     }
-
     private static boolean isValidIconId(final int iconId) {
         return iconId >= 0 && iconId < ICON_NAMES.length;
     }
-
     public static String getIconName(final int iconId) {
         return isValidIconId(iconId) ? ICON_NAMES[iconId] : "unknown<" + iconId + ">";
     }
-
     public static int getIconId(final String name) {
         Integer iconId = sNameToIdsMap.get(name);
         if (iconId != null) {
@@ -113,14 +97,12 @@ public final class KeyboardIconsSet {
         }
         throw new RuntimeException("unknown icon name: " + name);
     }
-
     public Drawable getIconDrawable(final int iconId) {
         if (isValidIconId(iconId)) {
             return mIcons[iconId];
         }
         throw new RuntimeException("unknown icon id: " + getIconName(iconId));
     }
-
     private static void setDefaultBounds(final Drawable icon)  {
         if (icon != null) {
             icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());

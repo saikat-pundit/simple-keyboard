@@ -1,15 +1,10 @@
 package rkr.simplekeyboard.inputmethod.compat;
-
 import android.os.LocaleList;
 import android.view.inputmethod.EditorInfo;
-
 import java.util.Locale;
-
 public final class EditorInfoCompatUtils {
     private EditorInfoCompatUtils() {
-        // This utility class is not publicly instantiable.
     }
-
     public static String imeActionName(final int imeOptions) {
         final int actionId = imeOptions & EditorInfo.IME_MASK_ACTION;
         switch (actionId) {
@@ -33,16 +28,13 @@ public final class EditorInfoCompatUtils {
             return "actionUnknown(" + actionId + ")";
         }
     }
-
     public static Locale getPrimaryHintLocale(final EditorInfo editorInfo) {
         if (editorInfo == null) {
             return null;
         }
-
         LocaleList localeList = editorInfo.hintLocales;
         if (localeList != null && !localeList.isEmpty())
             return localeList.get(0);
-
         return null;
     }
 }

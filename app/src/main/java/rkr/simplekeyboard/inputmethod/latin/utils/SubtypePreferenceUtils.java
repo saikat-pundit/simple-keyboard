@@ -1,33 +1,24 @@
 package rkr.simplekeyboard.inputmethod.latin.utils;
-
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import rkr.simplekeyboard.inputmethod.latin.Subtype;
-
 public final class SubtypePreferenceUtils {
     private static final String TAG = SubtypePreferenceUtils.class.getSimpleName();
-
     private SubtypePreferenceUtils() {
-        // This utility class is not publicly instantiable.
     }
-
     private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
     private static final int INDEX_OF_LOCALE = 0;
     private static final int INDEX_OF_KEYBOARD_LAYOUT = 1;
     private static final int PREF_ELEMENTS_LENGTH = (INDEX_OF_KEYBOARD_LAYOUT + 1);
     private static final String PREF_SUBTYPE_SEPARATOR = ";";
-
     private static String getPrefString(final Subtype subtype) {
         final String localeString = subtype.getLocale();
         final String keyboardLayoutSetName = subtype.getKeyboardLayoutSet();
         return localeString + LOCALE_AND_LAYOUT_SEPARATOR + keyboardLayoutSetName;
     }
-
     public static List<Subtype> createSubtypesFromPref(final String prefSubtypes, final Resources resources) {
         Log.i(TAG, "Loading subtypes: " + prefSubtypes);
         if (TextUtils.isEmpty(prefSubtypes)) {
@@ -53,7 +44,6 @@ public final class SubtypePreferenceUtils {
         }
         return subtypesList;
     }
-
     public static String createPrefSubtypes(final List<Subtype> subtypes) {
         if (subtypes == null || subtypes.size() == 0) {
             return "";

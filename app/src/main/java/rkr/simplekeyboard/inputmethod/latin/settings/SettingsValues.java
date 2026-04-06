@@ -1,23 +1,15 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.view.inputmethod.EditorInfo;
-
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.latin.InputAttributes;
-
-// Non-final for testing via mock library.
 public class SettingsValues {
-    public static final float DEFAULT_SIZE_SCALE = 1.0f; // 100%
-
-    // From resources:
+    public static final float DEFAULT_SIZE_SCALE = 1.0f; 
     public final SpacingAndPunctuations mSpacingAndPunctuations;
-    // From configuration:
     public final boolean mHasHardwareKeyboard;
     public final int mDisplayOrientation;
-    // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
     public final boolean mVibrateOn;
     public final boolean mSoundOn;
@@ -30,28 +22,15 @@ public class SettingsValues {
     public final boolean mShowNumberRow;
     public final boolean mSpaceSwipeEnabled;
     public final boolean mDeleteSwipeEnabled;
-
-    // From the input box
     public final InputAttributes mInputAttributes;
-
-    // Deduced settings
     public final float mKeypressSoundVolume;
     public final int mKeyPreviewPopupDismissDelay;
-
-    // Debug settings
     public final float mKeyboardHeightScale;
-
     public final int mBottomOffsetPortrait;
-
     public SettingsValues(final SharedPreferences prefs, final Resources res,
             final InputAttributes inputAttributes) {
-        // Get the resources
         mSpacingAndPunctuations = new SpacingAndPunctuations(res);
-
-        // Store the input attributes
         mInputAttributes = inputAttributes;
-
-        // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
         mVibrateOn = Settings.readVibrationEnabled(prefs, res);
         mSoundOn = Settings.readKeypressSoundEnabled(prefs, res);
@@ -60,8 +39,6 @@ public class SettingsValues {
         mShowsLanguageSwitchKey = Settings.readShowLanguageSwitchKey(prefs);
         mImeSwitchEnabled = Settings.readEnableImeSwitch(prefs);
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.getConfiguration());
-
-        // Compute other readable settings
         mKeyLongpressTimeout = Settings.readKeyLongpressTimeout(prefs, res);
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs);
         mKeyPreviewPopupDismissDelay = res.getInteger(R.integer.config_key_preview_linger_timeout);
@@ -73,19 +50,15 @@ public class SettingsValues {
         mSpaceSwipeEnabled = Settings.readSpaceSwipeEnabled(prefs);
         mDeleteSwipeEnabled = Settings.readDeleteSwipeEnabled(prefs);
     }
-
     public boolean isWordSeparator(final int code) {
         return mSpacingAndPunctuations.isWordSeparator(code);
     }
-
     public boolean isLanguageSwitchKeyDisabled() {
         return !mShowsLanguageSwitchKey;
     }
-
     public boolean isSameInputType(final EditorInfo editorInfo) {
         return mInputAttributes.isSameInputType(editorInfo);
     }
-
     public boolean hasSameOrientation(final Configuration configuration) {
         return mDisplayOrientation == configuration.orientation;
     }

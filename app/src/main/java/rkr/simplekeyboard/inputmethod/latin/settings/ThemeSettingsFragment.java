@@ -1,32 +1,23 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
-
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.keyboard.KeyboardTheme;
 import rkr.simplekeyboard.inputmethod.latin.settings.RadioButtonPreference.OnRadioButtonClickedListener;
-
-/**
- * "Keyboard theme" settings sub screen.
- */
 public final class ThemeSettingsFragment extends SubScreenFragment
         implements OnRadioButtonClickedListener {
     private int mSelectedThemeId;
-
     static class KeyboardThemePreference extends RadioButtonPreference {
         final int mThemeId;
-
         KeyboardThemePreference(final Context context, final String name, final int id) {
             super(context);
             setTitle(name);
             mThemeId = id;
         }
     }
-
     static void updateKeyboardThemeSummary(final Preference pref) {
         final Context context = pref.getContext();
         final Resources res = context.getResources();
@@ -40,7 +31,6 @@ public final class ThemeSettingsFragment extends SubScreenFragment
             }
         }
     }
-
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
@@ -59,7 +49,6 @@ public final class ThemeSettingsFragment extends SubScreenFragment
         final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(context);
         mSelectedThemeId = keyboardTheme.mThemeId;
     }
-
     @Override
     public void onRadioButtonClicked(final RadioButtonPreference preference) {
         if (preference instanceof KeyboardThemePreference) {
@@ -68,20 +57,17 @@ public final class ThemeSettingsFragment extends SubScreenFragment
             updateSelected();
         }
     }
-
     @Override
     public void onResume() {
         super.onResume();
         updateSelected();
     }
-
     @Override
     public void onPause() {
         super.onPause();
         KeyboardTheme.saveKeyboardThemeId(mSelectedThemeId, getSharedPreferences());
         Settings.removeKeyboardColor(getSharedPreferences());
     }
-
     private void updateSelected() {
         final PreferenceScreen screen = getPreferenceScreen();
         final int count = screen.getPreferenceCount();

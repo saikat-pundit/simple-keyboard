@@ -1,37 +1,24 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.content.Context;
 import android.content.RestrictionsManager;
 import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.text.TextUtils;
-
 import java.util.Set;
-
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.compat.PreferenceManagerCompat;
 import rkr.simplekeyboard.inputmethod.latin.Subtype;
 import rkr.simplekeyboard.inputmethod.latin.RichInputMethodManager;
-
-/* package private */ class InputMethodSettingsImpl {
+ class InputMethodSettingsImpl {
     private Preference mSubtypeEnablerPreference;
     private RichInputMethodManager mRichImm;
-
-    /**
-     * Initialize internal states of this object.
-     * @param context the context for this application.
-     * @param prefScreen a PreferenceScreen of PreferenceActivity or PreferenceFragment.
-     * @return true if this application is an IME and has two or more subtypes, false otherwise.
-     */
-    public boolean init(final Context context, final PreferenceScreen prefScreen) {
+        public boolean init(final Context context, final PreferenceScreen prefScreen) {
         RichInputMethodManager.init(context);
         mRichImm = RichInputMethodManager.getInstance();
-
         final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(context);
         final RestrictionsManager restrictionsMgr = (RestrictionsManager) context.getSystemService(Context.RESTRICTIONS_SERVICE);
         final Set<String> restrictionKeys = Settings.loadRestrictions(restrictionsMgr, prefs);
-
         mSubtypeEnablerPreference = new Preference(context);
         mSubtypeEnablerPreference.setTitle(R.string.select_language);
         mSubtypeEnablerPreference.setFragment(LanguagesSettingsFragment.class.getName());
@@ -40,14 +27,11 @@ import rkr.simplekeyboard.inputmethod.latin.RichInputMethodManager;
         updateEnabledSubtypeList();
         return true;
     }
-
     private static String getEnabledSubtypesLabel(final RichInputMethodManager richImm) {
         if (richImm == null) {
             return null;
         }
-
         final Set<Subtype> subtypes = richImm.getEnabledSubtypes(true);
-
         final StringBuilder sb = new StringBuilder();
         for (final Subtype subtype : subtypes) {
             if (sb.length() > 0) {
@@ -57,7 +41,6 @@ import rkr.simplekeyboard.inputmethod.latin.RichInputMethodManager;
         }
         return sb.toString();
     }
-
     public void updateEnabledSubtypeList() {
         if (mSubtypeEnablerPreference != null) {
             final String summary = getEnabledSubtypesLabel(mRichImm);

@@ -1,19 +1,12 @@
 package rkr.simplekeyboard.inputmethod.keyboard;
-
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
-
 import java.util.Arrays;
 import java.util.Locale;
-
 import rkr.simplekeyboard.inputmethod.compat.EditorInfoCompatUtils;
 import rkr.simplekeyboard.inputmethod.latin.Subtype;
 import rkr.simplekeyboard.inputmethod.latin.utils.InputTypeUtils;
-
-/**
- * Unique identifier for each keyboard type.
- */
 public final class KeyboardId {
     public static final int MODE_TEXT = 0;
     public static final int MODE_URL = 1;
@@ -24,7 +17,6 @@ public final class KeyboardId {
     public static final int MODE_DATE = 6;
     public static final int MODE_TIME = 7;
     public static final int MODE_DATETIME = 8;
-
     public static final int ELEMENT_ALPHABET = 0;
     public static final int ELEMENT_ALPHABET_MANUAL_SHIFTED = 1;
     public static final int ELEMENT_ALPHABET_AUTOMATIC_SHIFTED = 2;
@@ -34,7 +26,6 @@ public final class KeyboardId {
     public static final int ELEMENT_PHONE = 7;
     public static final int ELEMENT_PHONE_SYMBOLS = 8;
     public static final int ELEMENT_NUMBER = 9;
-
     public final Subtype mSubtype;
     public final int mThemeId;
     public final int mWidth;
@@ -48,9 +39,7 @@ public final class KeyboardId {
     public final String mCustomActionLabel;
     public final boolean mShowMoreKeys;
     public final boolean mShowNumberRow;
-
     private final int mHashCode;
-
     public KeyboardId(final int elementId, final KeyboardLayoutSet.Params params) {
         mSubtype = params.mSubtype;
         mThemeId = params.mKeyboardThemeId;
@@ -66,10 +55,8 @@ public final class KeyboardId {
                 ? mEditorInfo.actionLabel.toString() : null;
         mShowMoreKeys = params.mShowMoreKeys;
         mShowNumberRow = params.mShowNumberRow;
-
         mHashCode = computeHashCode(this);
     }
-
     private static int computeHashCode(final KeyboardId id) {
         return Arrays.hashCode(new Object[] {
                 id.mElementId,
@@ -89,7 +76,6 @@ public final class KeyboardId {
                 id.mThemeId
         });
     }
-
     private boolean equals(final KeyboardId other) {
         if (other == this)
             return true;
@@ -109,53 +95,42 @@ public final class KeyboardId {
                 && other.mSubtype.equals(mSubtype)
                 && other.mThemeId == mThemeId;
     }
-
     private static boolean isAlphabetKeyboard(final int elementId) {
         return elementId < ELEMENT_SYMBOLS;
     }
-
     public boolean isAlphabetKeyboard() {
         return isAlphabetKeyboard(mElementId);
     }
-
     public boolean navigateNext() {
         return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0
                 || imeAction() == EditorInfo.IME_ACTION_NEXT;
     }
-
     public boolean navigatePrevious() {
         return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0
                 || imeAction() == EditorInfo.IME_ACTION_PREVIOUS;
     }
-
     public boolean passwordInput() {
         final int inputType = mEditorInfo.inputType;
         return InputTypeUtils.isPasswordInputType(inputType)
                 || InputTypeUtils.isVisiblePasswordInputType(inputType);
     }
-
     public boolean isMultiLine() {
         return (mEditorInfo.inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) != 0;
     }
-
     public int imeAction() {
         return InputTypeUtils.getImeOptionsActionIdFromEditorInfo(mEditorInfo);
     }
-
     public Locale getLocale() {
         return mSubtype.getLocaleObject();
     }
-
     @Override
     public boolean equals(final Object other) {
         return other instanceof KeyboardId && equals((KeyboardId) other);
     }
-
     @Override
     public int hashCode() {
         return mHashCode;
     }
-
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "[%s %s:%s %dx%d +%d %s %s%s%s%s%s%s %s]",
@@ -174,7 +149,6 @@ public final class KeyboardId {
                 KeyboardTheme.getKeyboardThemeName(mThemeId)
         );
     }
-
     public static boolean equivalentEditorInfoForKeyboard(final EditorInfo a, final EditorInfo b) {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
@@ -182,7 +156,6 @@ public final class KeyboardId {
                 && a.imeOptions == b.imeOptions
                 && TextUtils.equals(a.privateImeOptions, b.privateImeOptions);
     }
-
     public static String elementIdToName(final int elementId) {
         switch (elementId) {
         case ELEMENT_ALPHABET: return "alphabet";
@@ -197,7 +170,6 @@ public final class KeyboardId {
         default: return null;
         }
     }
-
     public static String modeName(final int mode) {
         switch (mode) {
         case MODE_TEXT: return "text";
@@ -212,7 +184,6 @@ public final class KeyboardId {
         default: return null;
         }
     }
-
     public static String actionName(final int actionId) {
         return (actionId == InputTypeUtils.IME_ACTION_CUSTOM_LABEL) ? "actionCustomLabel"
                 : EditorInfoCompatUtils.imeActionName(actionId);

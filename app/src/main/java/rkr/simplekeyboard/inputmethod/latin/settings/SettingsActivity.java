@@ -1,5 +1,4 @@
 package rkr.simplekeyboard.inputmethod.latin.settings;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,25 +14,20 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
-
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.latin.utils.FragmentUtils;
-
 public class SettingsActivity extends PreferenceActivity {
     private static final String DEFAULT_FRAGMENT = SettingsFragment.class.getName();
     private static final String TAG = SettingsActivity.class.getSimpleName();
-
     @Override
     protected void onStart() {
         super.onStart();
-
         boolean enabled = false;
         try {
             enabled = isInputMethodOfThisImeEnabled();
         } catch (Exception e) {
             Log.e(TAG, "Exception in check if input method is enabled", e);
         }
-
         if (!enabled) {
             final Context context = this;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -52,16 +46,10 @@ public class SettingsActivity extends PreferenceActivity {
                 }
             });
             builder.setCancelable(false);
-
             builder.create().show();
         }
     }
-
-    /**
-     * Check if this IME is enabled in the system.
-     * @return whether this IME is enabled in the system.
-     */
-    private boolean isInputMethodOfThisImeEnabled() {
+        private boolean isInputMethodOfThisImeEnabled() {
         final InputMethodManager imm =
                 (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         final String imePackageName = getPackageName();
@@ -72,15 +60,11 @@ public class SettingsActivity extends PreferenceActivity {
         }
         return false;
     }
-
     @Override
     protected void onCreate(final Bundle savedState) {
         super.onCreate(savedState);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             final View container = (View) getListView().getParent().getParent();
-            // com.android.internal.R.id.prefs_container in
-            // https://android.googlesource.com/platform/frameworks/base/+/refs/heads/main/core/res/res/layout/preference_list_content.xml
             container.setOnApplyWindowInsetsListener((view, windowInsets) -> {
                 android.graphics.Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars());
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
@@ -92,14 +76,12 @@ public class SettingsActivity extends PreferenceActivity {
                 return WindowInsets.CONSUMED;
             });
         }
-
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
     }
-
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -108,7 +90,6 @@ public class SettingsActivity extends PreferenceActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public Intent getIntent() {
         final Intent intent = super.getIntent();
@@ -119,7 +100,6 @@ public class SettingsActivity extends PreferenceActivity {
         intent.putExtra(EXTRA_NO_HEADERS, true);
         return intent;
     }
-
     @Override
     public boolean isValidFragment(final String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);

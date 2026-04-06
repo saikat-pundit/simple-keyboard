@@ -1,59 +1,22 @@
 package rkr.simplekeyboard.inputmethod.latin.common;
-
 public final class Constants {
-
     public static final class Color {
-        /**
-         * The alpha value for fully opaque.
-         */
-        public final static int ALPHA_OPAQUE = 255;
+                public final static int ALPHA_OPAQUE = 255;
     }
-
     public static final class TextUtils {
-        /**
-         * Capitalization mode for {@link android.text.TextUtils#getCapsMode}: don't capitalize
-         * characters.  This value may be used with
-         * {@link android.text.TextUtils#CAP_MODE_CHARACTERS},
-         * {@link android.text.TextUtils#CAP_MODE_WORDS}, and
-         * {@link android.text.TextUtils#CAP_MODE_SENTENCES}.
-         */
-        // TODO: Straighten this out. It's bizarre to have to use android.text.TextUtils.CAP_MODE_*
-        // except for OFF that is in Constants.TextUtils.
         public static final int CAP_MODE_OFF = 0;
-
         private TextUtils() {
-            // This utility class is not publicly instantiable.
         }
     }
-
     public static final int NOT_A_CODE = -1;
     public static final int NOT_A_COORDINATE = -1;
-
-    // A hint on how many characters to cache from the TextView. A good value of this is given by
-    // how many characters we need to be able to almost always find the caps mode.
     public static final int EDITOR_CONTENTS_CACHE_SIZE = 1024;
-    // How many characters we accept for the recapitalization functionality. This needs to be
-    // large enough for all reasonable purposes, but avoid purposeful attacks. 100k sounds about
-    // right for this.
     public static final int MAX_CHARACTERS_FOR_RECAPITALIZATION = 1024 * 100;
-
     public static boolean isValidCoordinate(final int coordinate) {
-        // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},
-        // and {@link SPELL_CHECKER_COORDINATE}.
         return coordinate >= 0;
     }
-
-    /**
-     * Custom request code used in
-     * {@link rkr.simplekeyboard.inputmethod.keyboard.KeyboardActionListener#onCustomRequest(int)}.
-     */
-    // The code to show input method picker.
     public static final int CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER = 1;
-
-    /**
-     * Some common keys code. Must be positive.
-     */
-    public static final int CODE_ENTER = '\n';
+        public static final int CODE_ENTER = '\n';
     public static final int CODE_TAB = '\t';
     public static final int CODE_SPACE = ' ';
     public static final int CODE_PERIOD = '.';
@@ -63,15 +26,9 @@ public final class Constants {
     public static final int CODE_BACKSLASH = '\\';
     public static final int CODE_VERTICAL_BAR = '|';
     public static final int CODE_PERCENT = '%';
-    public static final int CODE_INVERTED_QUESTION_MARK = 0xBF; // ¿
-    public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1; // ¡
-
-    /**
-     * Special keys code. Must be negative.
-     * These should be aligned with constants in
-     * {@link rkr.simplekeyboard.inputmethod.keyboard.internal.KeyboardCodesSet}.
-     */
-    public static final int CODE_SHIFT = -1;
+    public static final int CODE_INVERTED_QUESTION_MARK = 0xBF; 
+    public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1; 
+        public static final int CODE_SHIFT = -1;
     public static final int CODE_CAPSLOCK = -2;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -3;
     public static final int CODE_OUTPUT_TEXT = -4;
@@ -83,13 +40,10 @@ public final class Constants {
     public static final int CODE_LANGUAGE_SWITCH = -10;
     public static final int CODE_SHIFT_ENTER = -11;
     public static final int CODE_SYMBOL_SHIFT = -12;
-    // Code value representing the code is not specified.
     public static final int CODE_UNSPECIFIED = -13;
-
     public static boolean isLetterCode(final int code) {
         return code >= CODE_SPACE;
     }
-
     public static String printableCode(final int code) {
         switch (code) {
         case CODE_SHIFT: return "shift";
@@ -114,15 +68,8 @@ public final class Constants {
             return String.format("\\U%05X", code);
         }
     }
-
-    /**
-     * Screen metrics (a.k.a. Device form factor) constants of
-     * {@link rkr.simplekeyboard.inputmethod.R.integer#config_screen_metrics}.
-     */
-    public static final int SCREEN_METRICS_LARGE_TABLET = 2;
+        public static final int SCREEN_METRICS_LARGE_TABLET = 2;
     public static final int SCREEN_METRICS_SMALL_TABLET = 3;
-
     private Constants() {
-        // This utility class is not publicly instantiable.
     }
 }

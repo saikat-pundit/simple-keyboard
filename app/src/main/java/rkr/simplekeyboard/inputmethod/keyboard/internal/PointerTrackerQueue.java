@@ -1,13 +1,9 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
-
 import android.util.Log;
-
 import java.util.ArrayList;
-
 public final class PointerTrackerQueue {
     private static final String TAG = PointerTrackerQueue.class.getSimpleName();
     private static final boolean DEBUG = false;
-
     public interface Element {
         boolean isModifier();
         boolean isInDraggingFinger();
@@ -15,20 +11,15 @@ public final class PointerTrackerQueue {
         void onPhantomUpEvent(long eventTime);
         void cancelTrackingForAction();
     }
-
     private static final int INITIAL_CAPACITY = 10;
-    // Note: {@link #mExpandableArrayOfActivePointers} and {@link #mArraySize} are synchronized by
-    // {@link #mExpandableArrayOfActivePointers}
     private final ArrayList<Element> mExpandableArrayOfActivePointers =
             new ArrayList<>(INITIAL_CAPACITY);
     private int mArraySize = 0;
-
     public int size() {
         synchronized (mExpandableArrayOfActivePointers) {
             return mArraySize;
         }
     }
-
     public void add(final Element pointer) {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
@@ -44,7 +35,6 @@ public final class PointerTrackerQueue {
             mArraySize = arraySize + 1;
         }
     }
-
     public void remove(final Element pointer) {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
@@ -59,10 +49,9 @@ public final class PointerTrackerQueue {
                     if (newIndex != index) {
                         Log.w(TAG, "Found duplicated element in remove: " + pointer);
                     }
-                    continue; // Remove this element from the expandableArray.
+                    continue; 
                 }
                 if (newIndex != index) {
-                    // Shift this element toward the beginning of the expandableArray.
                     expandableArray.set(newIndex, element);
                 }
                 newIndex++;
@@ -70,7 +59,6 @@ public final class PointerTrackerQueue {
             mArraySize = newIndex;
         }
     }
-
     public void releaseAllPointersOlderThan(final Element pointer, final long eventTime) {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
@@ -82,19 +70,17 @@ public final class PointerTrackerQueue {
             for (newIndex = index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    break; // Stop releasing elements.
+                    break; 
                 }
                 if (!element.isModifier()) {
                     element.onPhantomUpEvent(eventTime);
-                    continue; // Remove this element from the expandableArray.
+                    continue; 
                 }
                 if (newIndex != index) {
-                    // Shift this element toward the beginning of the expandableArray.
                     expandableArray.set(newIndex, element);
                 }
                 newIndex++;
             }
-            // Shift rest of the expandableArray.
             int count = 0;
             for (; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
@@ -106,7 +92,6 @@ public final class PointerTrackerQueue {
                     }
                 }
                 if (newIndex != index) {
-                    // Shift this element toward the beginning of the expandableArray.
                     expandableArray.set(newIndex, expandableArray.get(index));
                 }
                 newIndex++;
@@ -114,11 +99,9 @@ public final class PointerTrackerQueue {
             mArraySize = newIndex;
         }
     }
-
     public void releaseAllPointers(final long eventTime) {
         releaseAllPointersExcept(null, eventTime);
     }
-
     public void releaseAllPointersExcept(final Element pointer, final long eventTime) {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
@@ -141,10 +124,9 @@ public final class PointerTrackerQueue {
                     }
                 } else {
                     element.onPhantomUpEvent(eventTime);
-                    continue; // Remove this element from the expandableArray.
+                    continue; 
                 }
                 if (newIndex != index) {
-                    // Shift this element toward the beginning of the expandableArray.
                     expandableArray.set(newIndex, element);
                 }
                 newIndex++;
@@ -152,7 +134,6 @@ public final class PointerTrackerQueue {
             mArraySize = newIndex;
         }
     }
-
     public boolean hasModifierKeyOlderThan(final Element pointer) {
         synchronized (mExpandableArrayOfActivePointers) {
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
@@ -160,7 +141,7 @@ public final class PointerTrackerQueue {
             for (int index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    return false; // Stop searching modifier key.
+                    return false; 
                 }
                 if (element.isModifier()) {
                     return true;
@@ -169,7 +150,6 @@ public final class PointerTrackerQueue {
             return false;
         }
     }
-
     public boolean isAnyInDraggingFinger() {
         synchronized (mExpandableArrayOfActivePointers) {
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
@@ -183,7 +163,6 @@ public final class PointerTrackerQueue {
             return false;
         }
     }
-
     public boolean isAnyInCursorMove() {
         synchronized (mExpandableArrayOfActivePointers) {
             final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
@@ -197,7 +176,6 @@ public final class PointerTrackerQueue {
             return false;
         }
     }
-
     public void cancelAllPointerTrackers() {
         synchronized (mExpandableArrayOfActivePointers) {
             if (DEBUG) {
@@ -211,7 +189,6 @@ public final class PointerTrackerQueue {
             }
         }
     }
-
     @Override
     public String toString() {
         synchronized (mExpandableArrayOfActivePointers) {
