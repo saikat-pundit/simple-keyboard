@@ -171,7 +171,7 @@ public final class KeyboardRow {
             case KEYWIDTH_FILL_RIGHT:
                 final float keyboardRightEdge = mParams.mOccupiedWidth - mParams.mRightPadding;
                 return keyboardRightEdge - mCurrentX;
-            default: 
+            default:
                 return ResourceUtils.getFraction(keyAttr, R.styleable.Keyboard_Key_keyWidth,
                         mParams.mBaseWidth, getDefaultKeyPaddedWidth()) - mParams.mHorizontalGap;
         }

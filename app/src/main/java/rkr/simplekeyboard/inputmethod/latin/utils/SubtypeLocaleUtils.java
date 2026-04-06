@@ -43,13 +43,13 @@ public final class SubtypeLocaleUtils {
     private static final String LOCALE_CROATIAN = "hr";
     private static final String LOCALE_HUNGARIAN = "hu";
     private static final String LOCALE_ARMENIAN_ARMENIA = "hy_AM";
-    private static final String LOCALE_INDONESIAN_1 = "in"; 
-    private static final String LOCALE_INDONESIAN_2 = "id"; 
+    private static final String LOCALE_INDONESIAN_1 = "in";
+    private static final String LOCALE_INDONESIAN_2 = "id";
     private static final String LOCALE_ICELANDIC = "is";
     private static final String LOCALE_ITALIAN = "it";
     private static final String LOCALE_ITALIAN_SWITZERLAND = "it_CH";
-    private static final String LOCALE_HEBREW_1 = "iw"; 
-    private static final String LOCALE_HEBREW_2 = "he"; 
+    private static final String LOCALE_HEBREW_1 = "iw";
+    private static final String LOCALE_HEBREW_2 = "he";
     private static final String LOCALE_GEORGIAN_GEORGIA = "ka_GE";
     private static final String LOCALE_KAZAKH = "kk";
     private static final String LOCALE_KHMER_CAMBODIA = "km_KH";
@@ -63,7 +63,7 @@ public final class SubtypeLocaleUtils {
     private static final String LOCALE_MONGOLIAN_MONGOLIA = "mn_MN";
     private static final String LOCALE_MARATHI_INDIA = "mr_IN";
     private static final String LOCALE_MALAY_MALAYSIA = "ms_MY";
-    private static final String LOCALE_NORWEGIAN_BOKMAL = "nb"; 
+    private static final String LOCALE_NORWEGIAN_BOKMAL = "nb";
     private static final String LOCALE_NEPALI_NEPAL = "ne_NP";
     private static final String LOCALE_DUTCH = "nl";
     private static final String LOCALE_DUTCH_BELGIUM = "nl_BE";

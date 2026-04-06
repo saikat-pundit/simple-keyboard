@@ -91,7 +91,7 @@ public final class KeyboardTextsSet {
         final String name = text.substring(pos + prefixLength, end);
         if (prefix.equals(PREFIX_TEXT)) {
             sb.append(getText(name));
-        } else { 
+        } else {
             final int resId = mResources.getIdentifier(name, "string", mResourcePackageName);
             sb.append(mResources.getString(resId));
         }

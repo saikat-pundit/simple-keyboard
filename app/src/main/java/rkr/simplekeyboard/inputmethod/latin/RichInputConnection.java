@@ -20,8 +20,8 @@ import rkr.simplekeyboard.inputmethod.latin.utils.CapsModeUtils;
 public final class RichInputConnection {
     private static final String TAG = "RichInputConnection";
     private static final int INVALID_CURSOR_POSITION = -1;
-        private int mExpectedSelStart = INVALID_CURSOR_POSITION; 
-        private int mExpectedSelEnd = INVALID_CURSOR_POSITION; 
+        private int mExpectedSelStart = INVALID_CURSOR_POSITION;
+        private int mExpectedSelEnd = INVALID_CURSOR_POSITION;
         private String mTextBeforeCursor = "";
     private String mTextAfterCursor = "";
     private String mTextSelection = "";
@@ -49,7 +49,7 @@ public final class RichInputConnection {
         }
     }
     public void endBatchEdit() {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); 
+        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!");
         if (--mNestLevel == 0 && isConnected()) {
             mIC.endBatchEdit();
         }

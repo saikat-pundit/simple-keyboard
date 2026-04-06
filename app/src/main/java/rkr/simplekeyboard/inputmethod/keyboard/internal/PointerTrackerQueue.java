@@ -49,7 +49,7 @@ public final class PointerTrackerQueue {
                     if (newIndex != index) {
                         Log.w(TAG, "Found duplicated element in remove: " + pointer);
                     }
-                    continue; 
+                    continue;
                 }
                 if (newIndex != index) {
                     expandableArray.set(newIndex, element);
@@ -70,11 +70,11 @@ public final class PointerTrackerQueue {
             for (newIndex = index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    break; 
+                    break;
                 }
                 if (!element.isModifier()) {
                     element.onPhantomUpEvent(eventTime);
-                    continue; 
+                    continue;
                 }
                 if (newIndex != index) {
                     expandableArray.set(newIndex, element);
@@ -124,7 +124,7 @@ public final class PointerTrackerQueue {
                     }
                 } else {
                     element.onPhantomUpEvent(eventTime);
-                    continue; 
+                    continue;
                 }
                 if (newIndex != index) {
                     expandableArray.set(newIndex, element);
@@ -141,7 +141,7 @@ public final class PointerTrackerQueue {
             for (int index = 0; index < arraySize; index++) {
                 final Element element = expandableArray.get(index);
                 if (element == pointer) {
-                    return false; 
+                    return false;
                 }
                 if (element.isModifier()) {
                     return true;

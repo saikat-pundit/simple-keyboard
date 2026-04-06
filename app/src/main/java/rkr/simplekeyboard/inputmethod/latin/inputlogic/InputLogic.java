@@ -23,7 +23,7 @@ public final class InputLogic {
         mConnection = new RichInputConnection(latinIME);
     }
         public void startInput() {
-        mRecapitalizeStatus.disable(); 
+        mRecapitalizeStatus.disable();
     }
     public void clearCaches() {
         mConnection.clearCaches();
@@ -164,7 +164,7 @@ public final class InputLogic {
     }
         private void performRecapitalization() {
         if (!mConnection.hasSelection() || !mRecapitalizeStatus.mIsEnabled()) {
-            return; 
+            return;
         }
         final int selectionStart = mConnection.getExpectedSelectionStart();
         final int selectionEnd = mConnection.getExpectedSelectionEnd();
@@ -175,7 +175,7 @@ public final class InputLogic {
         if (!mRecapitalizeStatus.isStarted()
                 || !mRecapitalizeStatus.isSetAt(selectionStart, selectionEnd)) {
             final CharSequence selectedText = mConnection.getSelectedText();
-            if (TextUtils.isEmpty(selectedText)) return; 
+            if (TextUtils.isEmpty(selectedText)) return;
             mRecapitalizeStatus.start(selectionStart, selectionEnd, selectedText.toString(), mLatinIME.getCurrentLayoutLocale());
             mRecapitalizeStatus.trim();
         }

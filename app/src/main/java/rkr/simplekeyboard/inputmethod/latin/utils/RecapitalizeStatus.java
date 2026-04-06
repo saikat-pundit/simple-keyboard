@@ -94,7 +94,7 @@ public class RecapitalizeStatus {
     }
         public void rotate() {
         final String oldResult = mStringAfter;
-        int count = 0; 
+        int count = 0;
         do {
             mRotationStyleCurrentIndex = (mRotationStyleCurrentIndex + 1) % ROTATION_STYLE.length;
             if (CAPS_MODE_ORIGINAL_MIXED_CASE == ROTATION_STYLE[mRotationStyleCurrentIndex]

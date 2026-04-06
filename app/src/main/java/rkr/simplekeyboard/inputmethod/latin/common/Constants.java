@@ -26,8 +26,8 @@ public final class Constants {
     public static final int CODE_BACKSLASH = '\\';
     public static final int CODE_VERTICAL_BAR = '|';
     public static final int CODE_PERCENT = '%';
-    public static final int CODE_INVERTED_QUESTION_MARK = 0xBF; 
-    public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1; 
+    public static final int CODE_INVERTED_QUESTION_MARK = 0xBF;
+    public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1;
         public static final int CODE_SHIFT = -1;
     public static final int CODE_CAPSLOCK = -2;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -3;

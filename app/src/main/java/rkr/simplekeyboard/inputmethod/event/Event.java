@@ -12,7 +12,7 @@ public class Event {
     final private static int FLAG_NONE = 0;
     final private static int FLAG_REPEAT = 0x2;
     final private static int FLAG_CONSUMED = 0x4;
-    final private int mEventType; 
+    final private int mEventType;
     final public int mCodePoint;
     final public CharSequence mText;
     final public int mKeyCode;
@@ -45,7 +45,7 @@ public class Event {
     public boolean isConsumed() { return 0 != (FLAG_CONSUMED & mFlags); }
     public CharSequence getTextToCommit() {
         if (isConsumed()) {
-            return ""; 
+            return "";
         }
         switch (mEventType) {
         case EVENT_TYPE_MODE_KEY:

@@ -300,7 +300,7 @@ public class KeyboardView extends View {
                 paint.getFontMetrics(mFontMetrics);
                 hintBaseline = -mFontMetrics.top;
                 paint.setTextAlign(Align.CENTER);
-            } else { 
+            } else {
                 final float hintDigitWidth = TypefaceUtils.getReferenceDigitWidth(paint);
                 final float hintLabelWidth = TypefaceUtils.getStringWidth(hintLabel, paint);
                 hintX = keyWidth - mKeyHintLetterPadding
@@ -319,9 +319,9 @@ public class KeyboardView extends View {
             if (key.isAlignIconToBottom()) {
                 iconY = keyHeight - iconHeight;
             } else {
-                iconY = (keyHeight - iconHeight) / 2; 
+                iconY = (keyHeight - iconHeight) / 2;
             }
-            final int iconX = (keyWidth - iconWidth) / 2; 
+            final int iconX = (keyWidth - iconWidth) / 2;
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
         }
     }

@@ -274,7 +274,7 @@ public final class KeyboardLayoutSet {
                     return KeyboardId.MODE_DATE;
                 case InputType.TYPE_DATETIME_VARIATION_TIME:
                     return KeyboardId.MODE_TIME;
-                default: 
+                default:
                     return KeyboardId.MODE_DATETIME;
                 }
             case InputType.TYPE_CLASS_PHONE:

@@ -1,7 +1,7 @@
 package rkr.simplekeyboard.inputmethod.keyboard.internal;
 import android.util.Log;
  final class ShiftKeyState extends ModifierKeyState {
-    private static final int PRESSING_ON_SHIFTED = 3; 
+    private static final int PRESSING_ON_SHIFTED = 3;
     private static final int IGNORING = 4;
     public ShiftKeyState(String name) {
         super(name);

@@ -27,7 +27,7 @@ public final class MoreKeysKeyboard extends Keyboard {
         public int mNumColumns;
         public int mTopKeys;
         public int mLeftKeys;
-        public int mRightKeys; 
+        public int mRightKeys;
         public float mColumnWidth;
         public float mOffsetX;
         public MoreKeysKeyboardParams() {
@@ -67,7 +67,7 @@ public final class MoreKeysKeyboard extends Keyboard {
             final int topKeys = numKeys % mNumColumns;
             mTopKeys = topKeys == 0 ? mNumColumns : topKeys;
             final int numLeftKeys = (mNumColumns - 1) / 2;
-            final int numRightKeys = mNumColumns - numLeftKeys; 
+            final int numRightKeys = mNumColumns - numLeftKeys;
             final float leftWidth = Math.max(coordXInParent - mLeftPadding - keyPaddedWidth / 2
                     + mHorizontalGap / 2, 0);
             final float rightWidth = Math.max(parentKeyboardWidth - coordXInParent
@@ -131,7 +131,7 @@ public final class MoreKeysKeyboard extends Keyboard {
                 return pos;
             } else if (numRightKeys < rightSideKeys) {
                 return pos - (rightSideKeys - numRightKeys);
-            } else { 
+            } else {
                 return pos + (leftSideKeys - numLeftKeys);
             }
         }
@@ -146,7 +146,7 @@ public final class MoreKeysKeyboard extends Keyboard {
                 return 0;
             }
             int pos = 0;
-            int right = 1; 
+            int right = 1;
             int left = 0;
             int i = 0;
             while (true) {

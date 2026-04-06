@@ -491,7 +491,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element {
             } else if (oldKey == null) {
                 processDraggingFingerInToNewKey(newKey, x, y);
             }
-        } else { 
+        } else {
             if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, newKey)) {
                 dragFingerOutFromOldKey(oldKey, x, y);
             }

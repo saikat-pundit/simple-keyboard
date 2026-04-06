@@ -411,7 +411,7 @@ public class Key implements Comparable<Key> {
             return params.mLabelSize;
         case LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO:
             return params.mHintLabelSize;
-        default: 
+        default:
             return StringUtils.codePointCount(mLabel) == 1 ? params.mLetterSize : params.mLabelSize;
         }
     }

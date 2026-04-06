@@ -6,7 +6,7 @@ import android.view.inputmethod.EditorInfo;
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.latin.InputAttributes;
 public class SettingsValues {
-    public static final float DEFAULT_SIZE_SCALE = 1.0f; 
+    public static final float DEFAULT_SIZE_SCALE = 1.0f;
     public final SpacingAndPunctuations mSpacingAndPunctuations;
     public final boolean mHasHardwareKeyboard;
     public final int mDisplayOrientation;

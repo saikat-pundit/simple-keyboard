@@ -24,7 +24,7 @@ public final class LocaleUtils {
                 locale = new Locale(elements[0] );
             } else if (elements.length == 2) {
                 locale = new Locale(elements[0] , elements[1] );
-            } else { 
+            } else {
                 locale = new Locale(elements[0] , elements[1] ,
                         elements[2] );
             }

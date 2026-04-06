@@ -603,7 +603,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
             break;
-        default: 
+        default:
         }
     }
     private void hapticAndAudioFeedback(final int code, final int repeatCount) {
