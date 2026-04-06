@@ -1,25 +1,17 @@
-name: Android CI/CD Release
+name: Android Release Build
 
 on:
-  workflow_dispatch: # Manual trigger from the Actions tab
-  # Optional: Uncomment the lines below to auto-build when you push a new version tag (e.g., v6.3)
-  # push:
-  #   tags:
-  #     - 'v*'
+  workflow_dispatch:
 
-# Grant the workflow permission to create/update releases
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      # IMPORTANT: Updated to JDK 17. 
-      # compileSdk 36 requires newer Gradle and AGP versions which no longer support Java 8.
+      - uses: actions/checkout@v4
+      
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -27,27 +19,23 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      - name: Grant execute permission for gradlew
+      - name: Grant permissions
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        # assembleDebug is used to ensure the APK is signed with a debug key for easy installation
+        run: ./gradlew assembleDebug -Pandroid.quiet=true
 
-      - name: Rename APK
+      - name: Rename and Move
         run: |
-          # Look for the debug APK instead
-          APK_FILE=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
-          
-          echo "Found APK: $APK_FILE"
-          mv "$APK_FILE" SimpleKeyboard.apk
+          APK_PATH=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          mv "$APK_PATH" SimpleKeyboard_EnglishOnly.apk
 
-      - name: Upload to GitHub Release
+      - name: Upload to Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "SimpleKeyboard.apk"
-          tag: "latest"
-          name: "Latest Simple Keyboard Build"
-          body: "Automated release build of Simple Keyboard (v6.3)."
-          allowUpdates: true        # Updates the existing 'latest' release instead of failing
-          replacesArtifacts: true   # Deletes the old APK and uploads the new one
+          artifacts: "SimpleKeyboard_EnglishOnly.apk"
+          tag: "v1.0-eng"
+          name: "English Only Build"
+          allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
