@@ -16,13 +16,11 @@ jobs:
       - name: Repair Broken Java Tables (English Only)
         run: |
           echo "Repairing KeyboardTextsTable.java to fix compilation errors..."
-          # This creates a minimal, valid Java file that only contains the English layout references.
-          # This solves the 'illegal start of expression' error by removing the broken 2000 lines.
           
           cat <<EOF > app/src/main/java/rkr/simplekeyboard/inputmethod/keyboard/internal/KeyboardTextsTable.java
           package rkr.simplekeyboard.inputmethod.keyboard.internal;
-          import java.util.HashMap;
-          public File class KeyboardTextsTable {
+
+          public class KeyboardTextsTable {
               public static final String[] TEXTS_TABLE = {"en_US", "qwerty"};
               static {
                   // Table stripped to English-only to fix regex corruption
