@@ -1,0 +1,43 @@
+name: Strip Explanations and Headers
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+permissions:
+  contents: write
+
+jobs:
+  remove-comments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Strip XML Headers
+        run: |
+          echo "Removing long comment blocks from XML files..."
+          # This command searches for standard multi-line XML comments () 
+          # that contain the word "Copyright" or "Licensed" and deletes the whole block.
+          find app/src/main/ -type f -name "*.xml" -exec perl -0777 -pi -e 's/\n*//ig' {} +
+
+      - name: Strip Java Headers
+        run: |
+          echo "Removing long comment blocks from Java files..."
+          # This command searches for standard multi-line Java comments (/* ... */) 
+          # that contain the word "Copyright" or "Licensed" and deletes the whole block.
+          find app/src/main/ -type f -name "*.java" -exec perl -0777 -pi -e 's/\/\*[\s\S]*?(Copyright|Licensed)[\s\S]*?\*\/\n*//ig' {} +
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add -u
+          
+          if git diff-index --quiet HEAD --; then
+            echo "No comment blocks found to delete."
+          else
+            git commit -m "chore: strip license headers and explanation comments"
+            git push
+            echo "Successfully removed comment blocks from all files!"
+          fi
